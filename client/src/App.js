@@ -1,4 +1,17 @@
+import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client';
+
 function App() {
+  const [socket, setSocket] = useState();
+
+  useEffect(() => {
+    const socket = io('ws://localhost:8000', { transports: ['websocket'] });
+    setSocket(socket);
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   return (
     <div className='App'>
       <header>
