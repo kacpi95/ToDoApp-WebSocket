@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 
 function App() {
   const [socket, setSocket] = useState();
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     const socket = io('ws://localhost:8000', { transports: ['websocket'] });
@@ -12,6 +13,11 @@ function App() {
       socket.disconnect();
     };
   }, []);
+
+  function removeTask(id) {
+    const deleteEl = tasks.filter((task) => task.id !== id);
+    setTasks(deleteEl);
+  }
   return (
     <div className='App'>
       <header>
@@ -22,12 +28,19 @@ function App() {
         <h2>Tasks</h2>
 
         <ul className='tasks-section__list' id='tasks-list'>
-          <li className='task'>
-            Shopping <button className='btn btn--red'>Remove</button>
-          </li>
-          <li className='task'>
-            Go out with a dog <button className='btn btn--red'>Remove</button>
-          </li>
+          {tasks.map((task) => {
+            return (
+              <li className='task' key={task.id}>
+                {task.name}
+                <button
+                  className='btn btn--red'
+                  onClick={() => removeTask(task.id)}
+                >
+                  Remove
+                </button>
+              </li>
+            );
+          })}
         </ul>
 
         <form id='add-task-form'>
