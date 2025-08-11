@@ -25,6 +25,10 @@ function App() {
     addTask({ id: shortid.generate(), name: taskName });
     socket.emit('addTask', { id: shortid.generate(), name: taskName });
   }
+
+  function addTask(task) {
+    setTasks((tasks) => [...tasks, task]);
+  }
   return (
     <div className='App'>
       <header>
