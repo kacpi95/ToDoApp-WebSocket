@@ -6,6 +6,8 @@ function App() {
   const [socket, setSocket] = useState();
   const [tasks, setTasks] = useState([]);
   const [taskName, setTaskName] = useState('');
+  const [edit, setEdit] = useState(null);
+  const [text, setText] = useState('');
 
   useEffect(() => {
     const socket = io('ws://localhost:8000', { transports: ['websocket'] });
@@ -17,6 +19,9 @@ function App() {
     socket.on('removeTask', (id) => removeTask(id, false));
     socket.on('updateData', (event) => {
       updateTasks(event);
+    });
+    socket.on('editTask', (task) => {
+      setTasks((tasks) => tasks.map((el) => (el.id === task.id ? task : el)));
     });
     return () => {
       socket.disconnect();
@@ -45,6 +50,21 @@ function App() {
   function updateTasks(newTasks) {
     setTasks(newTasks);
   }
+
+  function startEdit(task) {
+    setEdit(task.id);
+    setText(task.name);
+  }
+
+  function saveEdit() {
+    const task = { id: edit, name: text };
+    setTasks((tasks) => tasks.map((el) => (el.id === edit ? task : el)));
+    if (socket) {
+      socket.emit('editTask', task);
+    }
+    setEdit(null);
+    setText('');
+  }
   return (
     <div className='App'>
       <header>
@@ -58,7 +78,27 @@ function App() {
           {tasks.map((task) => {
             return (
               <li className='task' key={task.id}>
-                {task.name}
+                {edit === task.id ? (
+                  <>
+                    <input
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
+                    />
+                    <button className='btn btn--red' onClick={saveEdit}>
+                      Save
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <span>{task.name}</span>
+                    <button
+                      className='btn btn--red'
+                      onClick={() => startEdit(task)}
+                    >
+                      Edit
+                    </button>
+                  </>
+                )}
                 <button
                   className='btn btn--red'
                   onClick={() => removeTask(task.id)}
