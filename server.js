@@ -33,4 +33,11 @@ io.on('connection', (socket) => {
       socket.broadcast.emit('removeTask', id);
     }
   });
+  socket.on('editTask', (task) => {
+    const index = tasks.findIndex((el) => el.id === task.id);
+    if (index !== -1) {
+      tasks[index] = task;
+      socket.broadcast.emit('editTask', task);
+    }
+  });
 });
