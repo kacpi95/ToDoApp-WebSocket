@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import shortid from 'shortid';
 
 function App() {
   const [socket, setSocket] = useState();
   const [tasks, setTasks] = useState([]);
-  const [taskName, setTaskName] = useState();
+  const [taskName, setTaskName] = useState('');
 
   useEffect(() => {
     const socket = io('ws://localhost:8000', { transports: ['websocket'] });
@@ -19,7 +20,11 @@ function App() {
     setTasks((tasks) => tasks.filter((task) => task.id !== id));
   }
 
-  function submitForm() {}
+  function submitForm(e) {
+    e.preventDefault();
+    addTask({ id: shortid.generate(), name: taskName });
+    socket.emit('addTask', { id: shortid.generate(), name: taskName });
+  }
   return (
     <div className='App'>
       <header>
@@ -45,7 +50,7 @@ function App() {
           })}
         </ul>
 
-        <form id='add-task-form' onSubmit={submitForm()}>
+        <form id='add-task-form' onSubmit={submitForm}>
           <input
             className='text-input'
             autoComplete='off'
