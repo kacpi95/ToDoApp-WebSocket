@@ -11,6 +11,13 @@ function App() {
     const socket = io('ws://localhost:8000', { transports: ['websocket'] });
     setSocket(socket);
 
+    socket.on('addTask', (event) => {
+      addTask(event);
+    });
+    socket.on('removeTask', (event) => removeTask(event.id));
+    socket.on('updateData', (event) => {
+      updateTasks(event);
+    });
     return () => {
       socket.disconnect();
     };
@@ -22,12 +29,18 @@ function App() {
 
   function submitForm(e) {
     e.preventDefault();
-    addTask({ id: shortid.generate(), name: taskName });
-    socket.emit('addTask', { id: shortid.generate(), name: taskName });
+    const newTask = { id: shortid.generate(), name: taskName };
+    addTask(newTask);
+    socket.emit('addTask', newTask);
+    setTaskName('');
   }
 
   function addTask(task) {
     setTasks((tasks) => [...tasks, task]);
+  }
+
+  function updateTasks(newTasks) {
+    setTasks(newTasks);
   }
   return (
     <div className='App'>
