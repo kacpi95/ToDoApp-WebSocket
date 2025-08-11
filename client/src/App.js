@@ -14,7 +14,7 @@ function App() {
     socket.on('addTask', (event) => {
       addTask(event);
     });
-    socket.on('removeTask', (event) => removeTask(event.id));
+    socket.on('removeTask', (id) => removeTask(id, false));
     socket.on('updateData', (event) => {
       updateTasks(event);
     });
@@ -23,8 +23,11 @@ function App() {
     };
   }, []);
 
-  function removeTask(id) {
+  function removeTask(id, emit = true) {
     setTasks((tasks) => tasks.filter((task) => task.id !== id));
+    if (emit) {
+      socket.emit('removeTask', id);
+    }
   }
 
   function submitForm(e) {

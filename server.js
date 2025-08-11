@@ -11,11 +11,11 @@ const server = app.listen(8000, () => {
 const io = socket(server);
 
 const tasks = [
-  { id: 1, name: 'Shopping' },
-  {
-    id: 2,
-    name: 'Cleaning',
-  },
+  // { id: 1, name: 'Shopping' },
+  // {
+  //   id: 2,
+  //   name: 'Cleaning',
+  // },
 ];
 io.on('connection', (socket) => {
   socket.emit('updateData', tasks);
