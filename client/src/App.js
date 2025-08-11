@@ -84,7 +84,7 @@ function App() {
                       value={text}
                       onChange={(e) => setText(e.target.value)}
                     />
-                    <button className='btn btn--red' onClick={saveEdit}>
+                    <button className='btn' onClick={saveEdit}>
                       Save
                     </button>
                   </>
@@ -92,7 +92,7 @@ function App() {
                   <>
                     <span>{task.name}</span>
                     <button
-                      className='btn btn--red'
+                      className='btn'
                       onClick={() => startEdit(task)}
                     >
                       Edit
