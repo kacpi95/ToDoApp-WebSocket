@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 function App() {
   const [socket, setSocket] = useState();
   const [tasks, setTasks] = useState([]);
+  const [taskName, setTaskName] = useState();
 
   useEffect(() => {
     const socket = io('ws://localhost:8000', { transports: ['websocket'] });
@@ -15,9 +16,10 @@ function App() {
   }, []);
 
   function removeTask(id) {
-    const deleteEl = tasks.filter((task) => task.id !== id);
-    setTasks(deleteEl);
+    setTasks((tasks) => tasks.filter((task) => task.id !== id));
   }
+
+  function submitForm() {}
   return (
     <div className='App'>
       <header>
@@ -43,11 +45,13 @@ function App() {
           })}
         </ul>
 
-        <form id='add-task-form'>
+        <form id='add-task-form' onSubmit={submitForm()}>
           <input
             className='text-input'
             autoComplete='off'
             type='text'
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
             placeholder='Type your description'
             id='task-name'
           />
